@@ -160,18 +160,58 @@ public class TI_SP_2015 {
 		vhozeniMinci(index);
 	}
 	
-	public static void vhozeniMinci(int index){
-		int zbyva = ceny_jizdneho[index];
-		
+	/*
+	  public static void vhozeniMinci(int index){
+	 
+		int zbyva = ceny_jizdneho[index];		
 		int suma = 0;
+		
+		while(suma <= ceny_jizdneho[index] ){			
+			suma = 0;
+			for(int i = 0; i < vstup.length; i++){
+				suma = suma + vstup[i]*hodnota_minci[i];
+				System.out.println("ef"+vstup[i]*hodnota_minci[i]);
+			}
+			zbyva = ceny_jizdneho[index] - suma;			
+			String vhozeno = sc.nextLine();
+			if (vhozeno.equalsIgnoreCase("1")) {
+				vstup[0]++;
+			} else if (vhozeno.equalsIgnoreCase("2")) {
+				vstup[1]++;
+			} else if (vhozeno.equalsIgnoreCase("5")) {
+				vstup[2]++;
+			} else if (vhozeno.equalsIgnoreCase("10")) {
+				vstup[3]++;
+			} else if (vhozeno.equalsIgnoreCase("20")) {
+				vstup[4]++;
+			} else if (vhozeno.equalsIgnoreCase("50")) {
+				vstup[5]++;
+			} else if (vhozeno.equalsIgnoreCase("s")) {
+				vraceniPenezStorno();
+			} else {
+				System.out
+						.println("Chybny vstup. Zadejte prosim platny vstup.");
+				continue;
+			}
+			System.out.println("Napiste hodnotu vhozene mince. Zbyva " + zbyva + " d" + suma + " kc \n" +
+					"Pro stornovani objednavky stisknete 's'.");
+		}
+		tiskCeny(index);
+		
+	}
+	*/
+	///*
+	
+	 public static void vhozeniMinci(int index){
+	 
+		int zbyva = ceny_jizdneho[index];
 		while(zbyva > 0 ){
-			//zbyva -= suma;
 			System.out.println("Napiste hodnotu vhozene mince. Zbyva " + zbyva + " kc \n" +
 					"Pro stornovani objednavky stisknete 's'.");
 			String vhozeno = sc.nextLine();
 			if (vhozeno.equalsIgnoreCase("1")) {
 				vstup[0]++;
-				zbyva -= 1; 
+				zbyva -= 1;
 			} else if (vhozeno.equalsIgnoreCase("2")) {
 				vstup[1]++;
 				zbyva -= 2; 
@@ -193,51 +233,13 @@ public class TI_SP_2015 {
 				System.out
 						.println("Chybny vstup. Zadejte prosim platny vstup.");
 				continue;
-			}
-			suma = 0;
-			for(int i = 0; i < vstup.length; i++){
-				suma += vstup[i]*hodnota_minci[i];
-			}
+			}			
 		}
+		//sc.nextLine();
 		tiskCeny(index);
 		
-	}/*
-	
-	public static void vhozeniMinci(int index){
-		int zbyva = ceny_jizdneho[index];
-		System.out.println("Napiste hodnotu vhozene mince. Zbyva " + zbyva + " kc \n" +
-				"Pro stornovani objednavky stisknete 's'.");
-		do{
-			System.out.println("Napiste hodnotu vhozene mince. Zbyva " + zbyva + " kc \n" +
-					"Pro stornovani objednavky stisknete 's'.");
-			zbyva = ceny_jizdneho[index];
-			String vhozeno = sc.nextLine();
-			if (vhozeno.equalsIgnoreCase("1")) {
-				vstup[0]++;
-			} else if (vhozeno.equalsIgnoreCase("2")) {
-				vstup[1]++;
-			} else if (vhozeno.equalsIgnoreCase("5")) {
-				vstup[2]++;
-			} else if (vhozeno.equalsIgnoreCase("10")) {
-				vstup[3]++;
-			} else if (vhozeno.equalsIgnoreCase("20")) {
-				vstup[4]++;
-			} else if (vhozeno.equalsIgnoreCase("50")) {
-				vstup[5]++;
-			} else if (vhozeno.equalsIgnoreCase("s")) {
-				vraceniPenezStorno();
-			} else {
-				System.out
-						.println("Chybny vstup. Zadejte prosim platny vstup.");
-				continue;
-			}
-			for(int i = 0; i < vstup.length; i++){
-				zbyva = ceny_jizdneho[index] - vstup[i]*hodnota_minci[i];
-			}
-			
-		}while(zbyva > 0);
 	}
-	*/
+	//*/
 	public static void vraceniPenezStorno(){
 		for(int i = 0; i<vstup.length;i++){
 			if(vstup[i]!=0)
