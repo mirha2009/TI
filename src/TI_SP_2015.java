@@ -23,7 +23,9 @@ public class TI_SP_2015 {
 	/*
 	 * TO DO: - udavani casu tisku a platnosti jizdenky ???
 	 */
-
+/**
+ * KA stav èíslo 1
+ */
 	public static void kontrolaAutomatu() {
 		System.out.println("Probiha kontrola minci...");
 		for (int i = 0; i < pocet_minci.length; i++) {
@@ -41,6 +43,9 @@ public class TI_SP_2015 {
 		vyberJizdenku();
 	}
 
+/**
+ * 	DM stav èíslo 2
+ */
 	public static void doplneniMinci() {
 		System.out.println("Automat mimo provoz. Prosim doplnte mince.");
 		while (true) {
@@ -64,7 +69,9 @@ public class TI_SP_2015 {
 		}
 		kontrolaAutomatu();
 	}
-
+/**
+ * DV stav èíslo 3
+ */
 	public static void doplneniVytisku() {
 		System.out
 				.println("Automat mimo provoz. Prosim doplnte papir a toner.");
@@ -88,7 +95,9 @@ public class TI_SP_2015 {
 		}
 		kontrolaAutomatu();
 	}
-
+/**
+ * VJ stav èíslo 4
+ */
 	public static void vyberJizdenku() {
 		while (true) {
 			System.out
@@ -106,7 +115,9 @@ public class TI_SP_2015 {
 			}
 		}
 	}
-
+/**
+ * PJ stav èíslo 5
+ */
 	public static void plnocenneJizdne() {
 		while (true) {
 			System.out.println("\nPro 30 minutovou jizdenku stisknete '1',");
@@ -143,7 +154,9 @@ public class TI_SP_2015 {
 			}
 		}
 	}
-
+/**
+ * ZJ stav èíslo 6
+ */
 	public static void zlevneneJizdne() {
 		while (true) {
 			System.out.println("\nPro 30 minutovou jizdenku stisknete '1',");
@@ -180,13 +193,17 @@ public class TI_SP_2015 {
 			}
 		}
 	}
-
+/**
+ * TC stav èíslo 7
+ */
 	public static void tiskCeny() {
 		System.out.println("\nCena jizdenky je " + ceny_jizdneho[index]
 				+ " kc.");
 		vhozeniMinci();
 	}
-
+/**
+ * VM stav èíslo 8
+ */
 	public static void vhozeniMinci() {
 		zbyva = ceny_jizdneho[index];
 		System.out.println("Napiste hodnotu vhozene mince.");
@@ -228,7 +245,9 @@ public class TI_SP_2015 {
 				.println("Jizdenka zaplacena, pockejte prosim na jeji vytisteni...");
 		tiskJizdenky();
 	}
-
+/**
+ * VPS stav èíslo 9
+ */
 	public static void vraceniPenezStorno() {
 		for (int i = 0; i < vstup.length; i++) {
 			if (vstup[i] != 0)
@@ -237,7 +256,9 @@ public class TI_SP_2015 {
 		}
 		kontrolaAutomatu();
 	}
-
+/**
+ * TJ stav èíslo 10
+ */
 	public static void tiskJizdenky() {
 		Calendar cal = Calendar.getInstance();
 		int year = cal.get(Calendar.YEAR);
@@ -372,7 +393,9 @@ public class TI_SP_2015 {
 
 		prijetiMinci();
 	}
-
+/**
+ * PM stav èíslo 11
+ */
 	public static void prijetiMinci() {
 		for (int i = 0; i < vstup.length; i++) {
 			pocet_minci[i] += vstup[i];
@@ -385,7 +408,9 @@ public class TI_SP_2015 {
 			kontrolaAutomatu();
 		}
 	}
-
+/**
+ * VZ stav èíslo 12
+ */
 	public static void vraceniZbytku() {
 		int pom;
 		for (int i = 5; i >= 0; i--) {
@@ -407,7 +432,10 @@ public class TI_SP_2015 {
 
 		kontrolaAutomatu();
 	}
-
+/**
+ * 
+ * @param args
+ */
 	public static void main(String[] args) {
 		kontrolaAutomatu();
 
