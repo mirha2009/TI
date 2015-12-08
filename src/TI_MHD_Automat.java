@@ -36,7 +36,7 @@ public class TI_MHD_Automat {
 	static int platnost_dny[] = { 0, 0, 0, 1 };
 	
 	/* Promìnná udávající poèet zbývajících výtiskù jízdenek. */
-	static int vytisky = 0;
+	static int vytisky = 4;
 	
 	/**
 	 * @index uchovává index vybrané jízdenky. (0 až 7)
@@ -52,7 +52,7 @@ public class TI_MHD_Automat {
 	 * Pokud je vše v poøádku, metoda pøejde do stavu è. 4, výbìru jízdenek.
 	 */
 	public static int kontrolaAutomatu() {
-		System.out.println("Probiha kontrola minci...");
+		//System.out.println("Probiha kontrola minci...");
 		for (int i = 0; i < pocet_minci.length; i++) {
 			if (pocet_minci[i] < 3) {
 				System.out.println("Nedostatek minci v automatu.");
@@ -60,7 +60,7 @@ public class TI_MHD_Automat {
 			}
 		}
 		
-		System.out.println("Probiha kontrola stavu papiru a toneru...");
+		//System.out.println("Probiha kontrola stavu papiru a toneru...");
 		if (vytisky == 0) {
 			System.out.println("Nedostatek papiru a toneru v automatu.");
 			return 3;
@@ -170,6 +170,7 @@ public class TI_MHD_Automat {
 				index = 3;
 				break;
 			} else if (reakce.equalsIgnoreCase("s")) {
+				System.out.println("Probìhlo storno objednávky.");
 				return 1;
 			} else {
 				System.out.println("Chybny vstup. Zadejte prosim platny vstup.");
@@ -204,6 +205,7 @@ public class TI_MHD_Automat {
 				index = 7;
 				break;
 			} else if (reakce.equalsIgnoreCase("s")) {
+				System.out.println("Probìhlo storno objednávky.");
 				return 1;
 			} else {
 				System.out.println("Chybny vstup. Zadejte prosim platny vstup.");
@@ -267,6 +269,7 @@ public class TI_MHD_Automat {
 	 * Provádí vrácení mincí v pøípadì stornování objednávky. Poté pøejde do stavu kontroly.
 	 */
 	public static int vraceniPenezStorno() {
+		System.out.println("Probehlo storno objednávky, pockejte na vraceni vhozenych minci...");
 		for (int i = 0; i < vstup.length; i++) {
 			if (vstup[i] != 0)
 				System.out.println("Vraceno " + vstup[i] + " x " + hodnota_minci[i] + " kc.");
