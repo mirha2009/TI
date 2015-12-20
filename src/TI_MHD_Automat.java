@@ -1,58 +1,64 @@
 import java.util.*;
 
 /**
- * Øízení prodejního automatu na MHD jízdenky
- * @author Miroslav Havlíèek, Patrik Jaroš
+ * Rizeni prodejniho automatu na MHD jizdenky
+ * @author Miroslav Havlicek, Patrik Jaros
  */
 
 public class TI_MHD_Automat {
 
 	static Scanner sc = new Scanner(System.in);
 	
-	/* Zaklopka na vhazovani minci. */
+	/* Zaklopka na vhazovani minci (false - zavrena, true - otevrena) */
 	static boolean vhazovaniPovoleno = false;
 	
-	/* Napajeni. */
+	/* Napajeni (true - napajeni ze site, false - napajeni z baterie) */
 	static boolean napajeni = true;
 	
-	/* Hodnoty všech mincí v Kè. */
+	/* Hodnoty vsech minci v Kc */
 	static int hodnota_minci[] = { 1, 2, 5, 10, 20, 50 };
 	
-	/* Hlavní zásobník mincí. Každý index udává poèet mincí dané hodnoty. */
+	/* Hlavni zasobnik minci, kazdy index udava pocet minci dane hodnoty */
 	static int pocet_minci[] = { 500, 250, 100, 50, 25, 10 };
 	
 	/**
-	 * Ceny jízdného
-	 * index 0 až 3: ceny plnocenných jízdenek (30 minut, 60 minut, 180 minut a 24 hodin)
-	 * index 4 až 7: ceny zlevnìných jízdenek (ve stejném poøadí)
+	 * Ceny jizdneho
+	 * index 0 az 3: ceny plnocennych jizdenek (30 minut, 60 minut, 180 minut a 24 hodin)
+	 * index 4 az 7: ceny zlevnenych jizdenek (ve stejném poradi)
 	 */
 	static int ceny_jizdneho[] = { 16, 20, 34, 60, 8, 10, 17, 30 };
 	
-	/* Vstupní zásobník mincí. Udává poèet mincí dané hodnoty ve vstupním zásobníku. */
+	/* Vstupni zasobnik minci, udava pocet minci dane hodnoty ve vstupnim zasobniku */
 	static int vstupZ[] = { 0, 0, 0, 0, 0, 0 };
 	
-	/* Výstupní zásobník mincí. Udává poèet mincí dané hodnoty ve výstupním zásobníku. */
+	/* Vystupni zasobnik minci, udava pocet minci dane hodnoty ve vystupnim zasobniku */
 	static int vystup[] = { 0, 0, 0, 0, 0, 0 };
 	
-	/* 3 pole udávající èasové hodnoty pro jednotlivé typy jízdného v minutách, hodinách a ve dnech. */
+	/* 3 pole udavajici casove hodnoty pro jednotlive typy jizdneho v minutach, hodinach a ve dnech */
 	static int platnost_min[] = { 30, 0, 0, 0 };
 	static int platnost_hod[] = { 0, 1, 3, 0 };
 	static int platnost_dny[] = { 0, 0, 0, 1 };
 	
-	/* Promenna uchovavajici pocet zbyvajicich vytisku jizdenek. */
+	/* Promenna uchovavajici pocet zbyvajicich vytisku jizdenek */
 	static int vytisky = 4;
 	
 	/**
-	 * @index uchovává index vybrané jízdenky. (0 až 7)
-	 * @zbyva uchovává hodnotu která zbývá do zaplacení (kladná), nebo kterou je tøeba po transakci vrátit (záporná)
+	 * @index uchovava index vybrane jizdenky. (0 az 7)
+	 * @zbyva uchovava hodnotu ktera zbyva do zaplaceni (kladna), nebo kterou je treba po transakci vratit (záporná)
 	 */
 	static int index, zbyva;
 	
+	/**
+	 * Vypne automat v pripade poruchy.
+	 */
 	public static void ukonceniAutomatu(){
 		System.out.println("Automat byl z duvodu poruchy vypnut.");
 		System.exit(0);
 	}
 	
+	/**
+	 * Vrati pripadne jiz vhozene mince od klienta, pred vypnutim automatu.
+	 */
 	public static void vraceniPenezKontrola() {
 		System.out.println("Automat mimo provoz, pockejte na vraceni vhozenych minci...");
 		for (int i = 0; i < vstupZ.length; i++) {
@@ -61,8 +67,10 @@ public class TI_MHD_Automat {
 		}
 	}
 	
+	/**
+	 * Provadi kontrolu cidel v prubehu programu
+	 */
 	public static int kontrolaCidel() {
-		
 		for (int i = 0; i < pocet_minci.length; i++) {
 			if (pocet_minci[i] < 3){
 				if(zbyva!=0){ 
@@ -70,12 +78,10 @@ public class TI_MHD_Automat {
 				}
 				return 11;
 			}
-			
 		}		
-		
 		if (vytisky == 0) {
 			if(zbyva!=0){				
-					vraceniPenezKontrola();
+				vraceniPenezKontrola();
 			}
 			return 11;				
 		}
@@ -89,10 +95,7 @@ public class TI_MHD_Automat {
 	}
 	
 	/**
-	 * Stav KA - èíslo 1
-	 * Provádí kontrolu mincí a zbývajících výtískù automatu.
-	 * Pokud je nìèeho nedostatek, metoda pøejde do stavu (è. 2 nebo 3), ve kterém je možné danou vìc doplnit, nebo automat vypnout.
-	 * Pokud je vše v poøádku, metoda pøejde do stavu è. 4, výbìru jízdenek.
+	 * Provadi kontrolu minci a zbyvajicich vytisku automatu.
 	 */
 	public static int kontrolaAutomatu() {
 		if (vytisky == 0) {
@@ -112,12 +115,9 @@ public class TI_MHD_Automat {
 	}
 
 	/**
-	 * Stav DM - èíslo 2
-	 * V pøípadì nedostatku mincí v automatu lze mince doplnit, nebo automat vypnout.
-	 * Pokud dojde k doplnìní mincí, automat se vrátí do stavu è. 1.
+	 * Doplni mince, nebo papir a toner na tisk jizdenky v pripade jejich nedostatku.
 	 */
 	public static int doplneni() {
-		
 		System.out.println("Automat mimo provoz. Prosim doplnte mince, papir a toner.");		
 		while (true) {
 			System.out.println("Pro doplneni stisknete 'd' a potvrdte stiskem klavesy 'Enter'. ");
@@ -143,8 +143,7 @@ public class TI_MHD_Automat {
 	}
 	
 	/**
-	 * Stav VJ - èíslo 4
-	 * V tomto stavu si klient zvolí jízdné (plnocenné nebo zlevnìné). Podle toho automat pøejde do následujícího stavu.
+	 * Zde si klient vybere druh jizdneho, bud plnocenne, nebo zlevnene.
 	 */
 	public static int vyberJizdenku() {
 		while (true) {
@@ -163,9 +162,8 @@ public class TI_MHD_Automat {
 	}
 	
 	/**
-	 * Stav PJ - èíslo 5
-	 * V tomto stavu si klient vybere ze 4 typù plnocenného jízdného, podle toho se nastaví globální promìnná a automat pøejde do dalšího stavu.
-	 * V tomto stavu mùže klient také celou operaci stornovat.
+	 * Zde si klient vybere ze 4 typu plnocenneho jizdneho, podle toho se nastavi globalni promenna index.
+	 * Klient muze take celou operaci stornovat.
 	 */
 	public static int plnocenneJizdne() {
 		while (true) {
@@ -199,9 +197,8 @@ public class TI_MHD_Automat {
 	}
 	
 	/**
-	 * Stav ZJ - èíslo 6
-	 * V tomto stavu si klient vybere ze 4 typù zlevnìného jízdného, podle toho se nastaví globální promìnná a automat pøejde do dalšího stavu.
-	 * V tomto stavu mùže klient také celou operaci stornovat.
+	 * Zde si klient vybere ze 4 typu zlevneneho jizdneho, podle toho se nastavi globalni promenna index.
+	 * Klient muze take celou operaci stornovat.
 	 */
 	public static int zlevneneJizdne() {
 		while (true) {
@@ -234,7 +231,9 @@ public class TI_MHD_Automat {
 		return 5;
 	}
 	
-	
+	/**
+	 * Metoda pro pripad stornovani transakce. Dojde k pripadnemu vraceni jiz vhozenych minci.
+	 */
 	public static void stornoObjednavky(){
 		System.out.println("Objednavka byla stornovana...");
 		for (int i = 0; i < vstupZ.length; i++) {
@@ -244,8 +243,7 @@ public class TI_MHD_Automat {
 	}	
 	
 	/**
-	 * Stav TC - èíslo 7
-	 * V tomto stavu probìhne výpis ceny zvoleného jízdného, následnì automat pøejde do dalšího stavu.
+	 * Metoda slouzi k vypisu ceny zvolene jizdenky.
 	 */
 	public static int tiskCeny() {
 		if(kontrolaCidel() == 11) return 11;
@@ -254,9 +252,8 @@ public class TI_MHD_Automat {
 	}
 	
 	/**
-	 * Stav VM - èíslo 8
-	 * Zde probíhá zpracování vhazovaních mincí klientem, po vložení požadované, nebo vìtší èástky automat pøejde do dalšího stavu.
-	 * Klient mùže bìhem vhazování mincí celou operaci stornovat, v takovém pøípadì automat pøejde do stavu vrácení vhozených mincí.
+	 * Zde probiha zpracovani vhazovanych minci klientem. Po vlozeni pozadovane, nebo vetsi castky je jizdenka zaplacena.
+	 * Klient take muze behem vhazovani minci celou operaci stornovat, v takovem pripade jsou mu nasledne jiz vhozene mince vraceny
 	 */
 	public static int vhozeniMinci() {
 		zbyva = ceny_jizdneho[index];
@@ -300,9 +297,7 @@ public class TI_MHD_Automat {
 	}
 	
 	/**
-	 * Stav PM - èíslo 11
-	 * V tomto stavu dochází k pøijetí vhozených mincí do hlavního zásobníku automatu a vyprázdnìní vstupního zásobníku.
-	 * V pøípadì že klientovi automat ještì nìco musí vrátit, pøejde do dalšího stavu. V opaèném pøípadì pøejde do stavu kontroly.
+	 * Prijeti vhozenych minci do hlavniho zasobniku automatu ze vstupniho zasobniku.
 	 */
 	public static int prijetiMinci() {
 		for (int i = 0; i < vstupZ.length; i++) {
@@ -318,9 +313,8 @@ public class TI_MHD_Automat {
 	}
 	
 	/**
-	 * Stav VZ - èíslo 12
-	 * Tento stav zajišuje vrácení pøípadného pøebytku penìz, v pøípadì že klient vhodil vìtší èástku než bylo potøeba.
-	 * Automat se snaží vracet co možná nejmenší poèet mincí. Po vrácení pøejde do stavu kontroly.
+	 * Vraci pripadny preplatek od klienta, v pripade ze klient vhodil vetsi castku nez bylo potreba.
+	 * Automat se snazi vracet co mozna nejmensi pocet minci.
 	 */
 	public static int vraceniZbytku() {
 		int pom;
@@ -345,9 +339,7 @@ public class TI_MHD_Automat {
 	}
 	
 	/**
-	 * Stav TJ - èíslo 10
-	 * Tento stav zajišuje tisk vybrané a již zaplacené jízdenky s datem a èasem vypršení platnosti jízdenky.
-	 * Po vytištìní automat pøejde do následujícího stavu.
+	 * Vytisteni vybrane a jiz zaplacene jizdenky s datem a casem vyprseni jeji platnosti.
 	 */
 	public static int tiskJizdenky() {
 				
@@ -445,6 +437,7 @@ public class TI_MHD_Automat {
 	
 	/**
 	 * Hlavni metoda, ktera spousti konecny automat.
+	 * Prepinani ve switchi predstavuje prechody mezi stavy.
 	 * @param args
 	 */
 	public static void main(String[] args) {
@@ -480,7 +473,7 @@ public class TI_MHD_Automat {
 						break;
 				case 12:vstup = kontrolaAutomatu();
 						break;
-				default:System.out.println("System error.");
+				default:System.out.println("Systemova porucha.");
 						ukonceniAutomatu();
 			}
 		}
