@@ -44,7 +44,7 @@ public class TI_MHD_Automat {
 	
 	/**
 	 * @index uchovava index vybrane jizdenky. (0 az 7)
-	 * @zbyva uchovava hodnotu ktera zbyva do zaplaceni (kladna), nebo kterou je treba po transakci vratit (záporná)
+	 * @zbyva uchovava hodnotu ktera zbyva do zaplaceni (kladna), nebo kterou je treba po transakci vratit (zaporna)
 	 */
 	static int index, zbyva;
 	
