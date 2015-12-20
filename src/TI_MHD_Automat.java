@@ -1,4 +1,3 @@
-
 import java.util.*;
 
 /**
@@ -9,7 +8,11 @@ import java.util.*;
 public class TI_MHD_Automat {
 
 	static Scanner sc = new Scanner(System.in);
+	
+	/* Zaklopka na vhazovani minci. */
 	static boolean vhazovaniPovoleno = false;
+	
+	/* Napajeni. */
 	static boolean napajeni = true;
 	
 	/* Hodnoty všech mincí v Kè. */
@@ -26,7 +29,7 @@ public class TI_MHD_Automat {
 	static int ceny_jizdneho[] = { 16, 20, 34, 60, 8, 10, 17, 30 };
 	
 	/* Vstupní zásobník mincí. Udává poèet mincí dané hodnoty ve vstupním zásobníku. */
-	static int vstup[] = { 0, 0, 0, 0, 0, 0 };
+	static int vstupZ[] = { 0, 0, 0, 0, 0, 0 };
 	
 	/* Výstupní zásobník mincí. Udává poèet mincí dané hodnoty ve výstupním zásobníku. */
 	static int vystup[] = { 0, 0, 0, 0, 0, 0 };
@@ -36,7 +39,7 @@ public class TI_MHD_Automat {
 	static int platnost_hod[] = { 0, 1, 3, 0 };
 	static int platnost_dny[] = { 0, 0, 0, 1 };
 	
-	/* Promìnná udávající poèet zbývajících výtiskù jízdenek. */
+	/* Promenna uchovavajici pocet zbyvajicich vytisku jizdenek. */
 	static int vytisky = 4;
 	
 	/**
@@ -45,50 +48,44 @@ public class TI_MHD_Automat {
 	 */
 	static int index, zbyva;
 	
-	public static int konecAutomatu(){
-		System.out.println("Automat byl z duvodu poruchy vypnut");
+	public static void ukonceniAutomatu(){
+		System.out.println("Automat byl z duvodu poruchy vypnut.");
 		System.exit(0);
-		return 0;
 	}
 	
 	public static void vraceniPenezKontrola() {
 		System.out.println("Automat mimo provoz, pockejte na vraceni vhozenych minci...");
-		for (int i = 0; i < vstup.length; i++) {
-			if (vstup[i] != 0)
-				System.out.println("Vraceno " + vstup[i] + " x " + hodnota_minci[i] + " kc.");
+		for (int i = 0; i < vstupZ.length; i++) {
+			if (vstupZ[i] != 0)
+				System.out.println("Vraceno " + vstupZ[i] + " x " + hodnota_minci[i] + " kc.");
 		}
-		
 	}
 	
 	public static int kontrolaCidel() {
-		//System.out.println("Probiha kontrola minci...");
+		
 		for (int i = 0; i < pocet_minci.length; i++) {
 			if (pocet_minci[i] < 3){
-				System.out.println("Nedostatek minci v automatu.");
 				if(zbyva!=0){ 
 					vraceniPenezKontrola();
 				}
-				return 13;
+				return 11;
 			}
 			
-		}
+		}		
 		
-		//System.out.println("Probiha kontrola stavu papiru a toneru...");
 		if (vytisky == 0) {
-			System.out.println("Nedostatek papiru a toneru v automatu.");
-			if(zbyva==0){				
+			if(zbyva!=0){				
 					vraceniPenezKontrola();
 			}
-			return 13;				
+			return 11;				
 		}
 		if (!napajeni){
-			if(zbyva==0){				
+			if(zbyva!=0){				
 				vraceniPenezKontrola();
 			}
-			return 13;
+			return 11;
 		}
-		return 14;
-		
+		return 1;		
 	}
 	
 	/**
@@ -98,6 +95,11 @@ public class TI_MHD_Automat {
 	 * Pokud je vše v poøádku, metoda pøejde do stavu è. 4, výbìru jízdenek.
 	 */
 	public static int kontrolaAutomatu() {
+		if (vytisky == 0) {
+			System.out.println("Nedostatek papiru a toneru v automatu.");
+			return 2;
+		}
+		
 		for (int i = 0; i < pocet_minci.length; i++) {
 			if (pocet_minci[i] < 3) {
 				System.out.println("Nedostatek minci v automatu.");
@@ -105,13 +107,8 @@ public class TI_MHD_Automat {
 			}
 		}
 		
-		if (vytisky == 0) {
-			System.out.println("Nedostatek papiru a toneru v automatu.");
-			return 3;
-		}
-		
 		System.out.println("Automat je v provozu.");
-		return 4;
+		return 1;
 	}
 
 	/**
@@ -123,7 +120,7 @@ public class TI_MHD_Automat {
 		
 		System.out.println("Automat mimo provoz. Prosim doplnte mince, papir a toner.");		
 		while (true) {
-			System.out.println("Pro doplneni stisknete 'd' a potvrïte stiskem klávesnice 'Enter'. ");
+			System.out.println("Pro doplneni stisknete 'd' a potvrdte stiskem klavesy 'Enter'. ");
 			String reakce = sc.nextLine();			
 			if (reakce.equalsIgnoreCase("d")) {
 				System.out.println("Probiha doplneni minci...\n");
@@ -133,43 +130,17 @@ public class TI_MHD_Automat {
 				System.out.println("Probiha doplneni papiru a toneru...\n");
 				vytisky = 4;
 				break;
-				
 			} else {
 				System.out.println("Chybny vstup. Zadejte prosim platny vstup.");
 			}
 		}
-		if(kontrolaCidel()==13){ 
-			return 13;			
+		
+		if(kontrolaCidel() == 11){ 
+			return 11;			
 		}
-	return 1;
+		
+		return 0;
 	}
-	
-	/**
-	 * Stav DV - èíslo 3
-	 * V pøípadì nedostatku materiálu na tisk jízdenek v automatu, lze papír a toner doplnit, nebo automat vypnout.
-	 * Pokud dojde k doplnìní materiálu, automat se vrátí do stavu è. 1.
-	 */
-	/*public static int doplneniVytisku() {
-		System.out.println("Automat mimo provoz. Prosim doplnte papir a toner.");
-		
-		while (true) {
-			System.out.println("Pro doplneni stisknete 'd', pro vypnuti automatu stisknete 'e' a potvrïte stiskem klávesnice 'Enter'. ");
-			String reakce = sc.nextLine();
-			if (reakce.equalsIgnoreCase("d")) {
-				System.out.println("Probiha doplneni papiru a toneru...\n");
-				vytisky = 4;
-				break;
-			} else if (reakce.equalsIgnoreCase("e")) {
-				System.out.println("Probiha vypnuti automatu...");
-				System.out.println("Automat je vypnut.");
-				System.exit(0);
-			} else {
-				System.out.println("Chybny vstup. Zadejte prosim platny vstup.");
-			}
-		}
-		
-		return 1;
-	}*/
 	
 	/**
 	 * Stav VJ - èíslo 4
@@ -179,12 +150,12 @@ public class TI_MHD_Automat {
 		while (true) {
 			if(kontrolaCidel() == 13) return 13;
 			
-			System.out.println("\nPro plnocenne jizdne stisknete 'p', pro zlevnene stisknete 'z' a potvrïte stiskem klávesnice 'Enter'.");
+			System.out.println("\nPro plnocenne jizdne stisknete 'p', pro zlevnene stisknete 'z' a potvrdte stiskem klavesy 'Enter'.");
 			String reakce = sc.nextLine();
 			if (reakce.equalsIgnoreCase("p")) {
-				return 5;
+				return 3;
 			} else if (reakce.equalsIgnoreCase("z")) {
-				return 6;
+				return 4;
 			} else {
 				System.out.println("Chybny vstup. Zadejte prosim platny vstup.");
 			}
@@ -198,7 +169,7 @@ public class TI_MHD_Automat {
 	 */
 	public static int plnocenneJizdne() {
 		while (true) {
-			if(kontrolaCidel() == 13) return 13;
+			if(kontrolaCidel() == 11) return 11;
 			System.out.println("\nPro 30 minutovou jizdenku stisknete '1',");
 			System.out.println("Pro 60 minutovou jizdenku stisknete '2',");
 			System.out.println("Pro 180 minutovou jizdenku stisknete '3',");
@@ -219,12 +190,12 @@ public class TI_MHD_Automat {
 				break;
 			} else if (reakce.equalsIgnoreCase("s")) {
 				System.out.println("Probìhlo storno objednávky.");
-				return 1;
+				return 6;
 			} else {
 				System.out.println("Chybny vstup. Zadejte prosim platny vstup.");
 			}
 		}
-		return 7;
+		return 5;
 	}
 	
 	/**
@@ -234,7 +205,7 @@ public class TI_MHD_Automat {
 	 */
 	public static int zlevneneJizdne() {
 		while (true) {
-			if(kontrolaCidel() == 13) return 13;
+			if(kontrolaCidel() == 11) return 11;
 			System.out.println("\nPro 30 minutovou jizdenku stisknete '1',");
 			System.out.println("Pro 60 minutovou jizdenku stisknete '2',");
 			System.out.println("Pro 180 minutovou jizdenku stisknete '3',");
@@ -255,22 +226,31 @@ public class TI_MHD_Automat {
 				break;
 			} else if (reakce.equalsIgnoreCase("s")) {
 				System.out.println("Probìhlo storno objednávky.");
-				return 1;
+				return 6;
 			} else {
 				System.out.println("Chybny vstup. Zadejte prosim platny vstup.");
 			}
 		}
-		return 7;
+		return 5;
 	}
+	
+	
+	public static void stornoObjednavky(){
+		System.out.println("Objednavka byla stornovana...");
+		for (int i = 0; i < vstupZ.length; i++) {
+			if (vstupZ[i] != 0)
+				System.out.println("Vraceno " + vstupZ[i] + " x " + hodnota_minci[i] + " kc.");
+		}
+	}	
 	
 	/**
 	 * Stav TC - èíslo 7
 	 * V tomto stavu probìhne výpis ceny zvoleného jízdného, následnì automat pøejde do dalšího stavu.
 	 */
 	public static int tiskCeny() {
-		if(kontrolaCidel() == 13) return 13;
+		if(kontrolaCidel() == 11) return 11;
 		System.out.println("\nCena jizdenky je " + ceny_jizdneho[index]	+ " kc.");
-		return 8;
+		return 7;
 	}
 	
 	/**
@@ -283,54 +263,85 @@ public class TI_MHD_Automat {
 		vhazovaniPovoleno = true;
 		System.out.println("Napiste hodnotu vhozene mince.");
 		while (zbyva > 0) {			
-			if(kontrolaCidel() == 13){
+			if(kontrolaCidel() == 11){
 				vhazovaniPovoleno = false;
-				return 13;
+				return 11;
 			} 
 			System.out.println("Zbyva vhodit " + zbyva + " kc. Pro stornovani objednavky stisknete 's' a potvrïte stiskem klávesnice 'Enter'.");
 			String vhozeno = sc.nextLine();
 			if (vhozeno.equalsIgnoreCase("1")) {
-				vstup[0]++;
+				vstupZ[0]++;
 				zbyva -= 1;
 			} else if (vhozeno.equalsIgnoreCase("2")) {
-				vstup[1]++;
+				vstupZ[1]++;
 				zbyva -= 2;
 			} else if (vhozeno.equalsIgnoreCase("5")) {
-				vstup[2]++;
+				vstupZ[2]++;
 				zbyva -= 5;
 			} else if (vhozeno.equalsIgnoreCase("10")) {
-				vstup[3]++;
+				vstupZ[3]++;
 				zbyva -= 10;
 			} else if (vhozeno.equalsIgnoreCase("20")) {
-				vstup[4]++;
+				vstupZ[4]++;
 				zbyva -= 20;
 			} else if (vhozeno.equalsIgnoreCase("50")) {
-				vstup[5]++;
+				vstupZ[5]++;
 				zbyva -= 50;
 			} else if (vhozeno.equalsIgnoreCase("s")) {
 				vhazovaniPovoleno = false;
-				return 9;
+				return 6;
 			} else {
 				System.out.println("Chybny vstup. Zadejte prosim platny vstup.");
 			}
 		}
 		vhazovaniPovoleno = false;
 		System.out.println("Jizdenka zaplacena, pockejte prosim na jeji vytisteni...");
-		return 11;
+		return 8;
 	}
 	
 	/**
-	 * Stav VPS - èíslo 9
-	 * Provádí vrácení mincí v pøípadì stornování objednávky. Poté pøejde do stavu kontroly.
+	 * Stav PM - èíslo 11
+	 * V tomto stavu dochází k pøijetí vhozených mincí do hlavního zásobníku automatu a vyprázdnìní vstupního zásobníku.
+	 * V pøípadì že klientovi automat ještì nìco musí vrátit, pøejde do dalšího stavu. V opaèném pøípadì pøejde do stavu kontroly.
 	 */
-	public static int vraceniPenezStorno() {
-		if(kontrolaCidel() == 13) return 13;
-		System.out.println("Probehlo storno objednávky, pockejte na vraceni vhozenych minci...");
-		for (int i = 0; i < vstup.length; i++) {
-			if (vstup[i] != 0)
-				System.out.println("Vraceno " + vstup[i] + " x " + hodnota_minci[i] + " kc.");
+	public static int prijetiMinci() {
+		for (int i = 0; i < vstupZ.length; i++) {
+			pocet_minci[i] += vstupZ[i];
+			vstupZ[i] = 0;
 		}
-		return 1;
+		if (zbyva != 0) {
+			zbyva = (zbyva * -1);
+			return 9;
+		} else {
+			return 10;
+		}
+	}
+	
+	/**
+	 * Stav VZ - èíslo 12
+	 * Tento stav zajišuje vrácení pøípadného pøebytku penìz, v pøípadì že klient vhodil vìtší èástku než bylo potøeba.
+	 * Automat se snaží vracet co možná nejmenší poèet mincí. Po vrácení pøejde do stavu kontroly.
+	 */
+	public static int vraceniZbytku() {
+		int pom;
+		
+		for (int i = 5; i >= 0; i--) {
+			pom = (zbyva / hodnota_minci[i]);
+			if (pom > 0) {
+				pocet_minci[i] -= pom;
+				vystup[i] = pom;
+				zbyva -= (pom * hodnota_minci[i]);
+			}
+		}
+
+		for (int i = 0; i < vystup.length; i++) {
+			if (vystup[i] != 0) {
+				System.out.println("Vraceno " + vystup[i] + " x " + hodnota_minci[i] + " kc.");
+				vystup[i] = 0;
+			}
+		}
+
+		return 10;
 	}
 	
 	/**
@@ -358,7 +369,7 @@ public class TI_MHD_Automat {
 						System.out.printf("= Platnost:%02d/%02d/%02d %02d:%02d:%02d =\n", day, month + 1, year, hour, minute + 30, second);
 					
 					else if (hour == 23)
-						System.out.printf("= Platnost:%02d/%02d/%02d %02d:%02d:%02d =\n",	day + 1, month + 1, year, hour + 1 - 24, minute + 30 - 60, second);
+						System.out.printf("= Platnost:%02d/%02d/%02d %02d:%02d:%02d =\n", day + 1, month + 1, year, hour + 1 - 24, minute + 30 - 60, second);
 					
 					else
 						System.out.printf("= Platnost:%02d/%02d/%02d %02d:%02d:%02d =\n", day, month + 1, year, hour + 1, minute + 30 - 60,	second);
@@ -427,97 +438,52 @@ public class TI_MHD_Automat {
 			System.out.format("=         Cena: %2d kc          =\n", ceny_jizdneho[index]);
 		}
 		System.out.println("================================\n");
+		if(kontrolaCidel() == 11) return 11;
 		vytisky--;
-		if(kontrolaCidel() == 13) return 13;
-		return 1;
+		return 12;
 	}
 	
 	/**
-	 * Stav PM - èíslo 11
-	 * V tomto stavu dochází k pøijetí vhozených mincí do hlavního zásobníku automatu a vyprázdnìní vstupního zásobníku.
-	 * V pøípadì že klientovi automat ještì nìco musí vrátit, pøejde do dalšího stavu. V opaèném pøípadì pøejde do stavu kontroly.
-	 */
-	public static int prijetiMinci() {
-		for (int i = 0; i < vstup.length; i++) {
-			pocet_minci[i] += vstup[i];
-			vstup[i] = 0;
-		}
-		if (zbyva != 0) {
-			zbyva = (zbyva * -1);
-			return 12;
-		} else {
-			return 10;
-		}
-	}
-	
-	/**
-	 * Stav VZ - èíslo 12
-	 * Tento stav zajišuje vrácení pøípadného pøebytku penìz, v pøípadì že klient vhodil vìtší èástku než bylo potøeba.
-	 * Automat se snaží vracet co možná nejmenší poèet mincí. Po vrácení pøejde do stavu kontroly.
-	 */
-	public static int vraceniZbytku() {
-		int pom;
-		
-		for (int i = 5; i >= 0; i--) {
-			pom = (zbyva / hodnota_minci[i]);
-			if (pom > 0) {
-				pocet_minci[i] -= pom;
-				vystup[i] = pom;
-				zbyva -= (pom * hodnota_minci[i]);
-			}
-		}
-
-		for (int i = 0; i < vystup.length; i++) {
-			if (vystup[i] != 0) {
-				System.out.println("Vraceno " + vystup[i] + " x " + hodnota_minci[i] + " kc.");
-				vystup[i] = 0;
-			}
-		}
-
-		return 10;
-	}
-	
-	/**
-	 * Hlavní metoda, která spouští program. Funguje na principu koneèného automatu.
+	 * Hlavni metoda, ktera spousti konecny automat.
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		int stav = 1, novyStav;
+		int vstup = 0;
 		
 		while(true){
-			switch (stav) {
-				case 1: novyStav = kontrolaAutomatu();
+			switch (vstup) {
+				case 0:	vstup = kontrolaAutomatu();
 						break;
-				case 2:	novyStav = doplneni();
+				case 1:	vstup = vyberJizdenku();
 						break;
-				case 3: novyStav = doplneni();
+				case 2:	vstup = doplneni();
 						break;
-				case 4 : novyStav = vyberJizdenku();
+				case 3:	vstup = plnocenneJizdne();
 						break;
-				case 5:	novyStav = plnocenneJizdne();
+				case 4: vstup = zlevneneJizdne();
 						break;
-				case 6: novyStav = zlevneneJizdne();
+				case 5: vstup = tiskCeny();
 						break;
-				case 7: novyStav = tiskCeny();
+				case 6: stornoObjednavky();
+						vstup = kontrolaAutomatu();
 						break;
-				case 8: novyStav = vhozeniMinci();
+				case 7: vstup = vhozeniMinci();
 						break;
-				case 9: novyStav = vraceniPenezStorno();
+				case 8:	vstup = prijetiMinci();
 						break;
-				case 10:novyStav = tiskJizdenky();
+				case 9: vstup = vraceniZbytku();
 						break;
-				case 11:novyStav = prijetiMinci();
+				case 10:vstup = tiskJizdenky();
 						break;
-				case 12:novyStav = vraceniZbytku();
+				case 11:System.out.println("Porucha cidel.");
+						ukonceniAutomatu();
 						break;
-				case 13:novyStav = konecAutomatu();
+				case 12:vstup = kontrolaAutomatu();
 						break;
-				default: System.out.println("System error");
-						novyStav = konecAutomatu();
-			}			
-			stav = novyStav;
+				default:System.out.println("System error.");
+						ukonceniAutomatu();
+			}
 		}
 	}
-
 }
 
